@@ -1,2 +1,2 @@
-# deep-pilot
-A model vehicle driven by deep convolutional neural network.
+# Deep pilot
+A Raspberry Pi based model vehicle driven by deep convolutional neural network.
