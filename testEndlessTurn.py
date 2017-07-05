@@ -3,7 +3,7 @@ from ax12 import Ax12
 import time
 
 IdS = 2
-IdW = 15
+IdW = 12
 pos0 = -999
 pos1 = -999
 pos2 = -999

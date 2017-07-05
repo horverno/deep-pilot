@@ -525,8 +525,8 @@ class Ax12:
         outData += bytes([s[1]])
         outData += bytes([checksum])
         Ax12.port.write(outData)
-        print("--setmovingspeed--")
-        print(outData)
+        #print("--setmovingspeed--")
+        #print(outData)
         sleep(Ax12.TX_DELAY_TIME + 0.00001)
         return self.readData(id)
 
