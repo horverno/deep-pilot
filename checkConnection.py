@@ -16,7 +16,7 @@ subprocess.call('netsh interface ip show addresses "Wi-Fi")
 subprocess.call('netsh wlan connect ssid=ePiWifi name=ePiWifi')
 '''
                 
-p = Popen('netsh WLAN show pro-files', stdin=PIPE, stdout=PIPE, stderr=PIPE)
+p = Popen('netsh WLAN show profiles', stdin=PIPE, stdout=PIPE, stderr=PIPE)
 output, err = p.communicate()
 rc = p.returncode
 #print(str(output, 'utf-8'))
@@ -31,7 +31,14 @@ if "ePiWifi" in str(output, 'utf-8'):
     rc = p.returncode
     for item in str(output, 'utf-8').split("\n"):
         if "IP Address" in item:
-            print(item.strip())   
+            print(item.strip())
+    
+    yesNo = input('Would you like to ping raspberry? [y/n]: ')
+    if yesNo == "y":
+        p = Popen("ping raspberrypi.local", stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output, err = p.communicate()
+        rc = p.returncode
+        print(str(output, 'utf-8'))
 else:
     print("No ePiWifi profile found :(")
     
