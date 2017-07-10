@@ -65,59 +65,59 @@ def readMsg():
         readData, addr = sockR.recvfrom(1024) # buffer size is 1024 bytes
         print("R: %s" % readData)
         try:
-			readDict = json.loads(str(readData,'utf-8'))
-			for d in readDict:
-				if("Exit" == d):
-					exitFlag = True
-				if("SetUdpIpSend" == d):
-					udpIpSend = readDict["SetUdpIpSend"]
-					print("New ip: %s" % (udpIpSend))
-				if("SetDelay" == d):
-					sendDelay = float(readDict["SetDelay"])
-					print(" >> New frequency: %.2f" % (1 / sendDelay))
-				if("SetSpeedSignalReferenceDrive" == d):
-					axMot.setMovingSpeed(idMotDrive, readDict["SetSpeedSignalReferenceDrive"])
-					print(" >> New wehicle speed: %.1f" % (readDict["SetSpeedSignalReferenceDrive"]))
-				if("SetAngleReferenceSteering" == d):
-					axMot.move(idMotSteering, readDict["SetAngleReferenceSteering"])
-					print(" >> New steering angle: %.1f" % (readDict["SetAngleReferenceSteering"]))            
-				if("SendMotorPosition" == d):
-					if readDict["SendMotorPosition"] == True:
-						sendDict["MotorPositionDrive"] = 0
-						print(" >> Sending motor position too...")
-					else:
-						try:
-							del sendDict["MotorPositionDrive"]
-							break
-						except:
-							print(" >> Error deleting MotorPositionDrive")
-						print(" >> Stopped sending motor position...")            
-				if("SendLapNumber" == d):
-					if readDict["SendLapNumber"] == True:
-						sendDict["LapNumber"] = 0
-						print(" >> Sending LapNumber too...")
-					else:
-						try:
-							del sendDict["LapNumber"]
-							break
-						except:
-							print(" >> Error deleting LapNumber")
-						print(" >> Stopped sending LapNumber...")
-				if("SendCamera1" == d):
-					if readDict["SendCamera1"] == True:
-						#snap1 = snapShotImage()
-						#sendDict["Camera1"] = str(pygame.image.tostring(snap1, "RGBA", True))
-						#sendDict["Camera1"] = "ff"
-						#print(pygame.image.tostring(snap1, "RGBA", True))
-						print(" >> Sending cam image[1] too via TCP...")
-					else:
-						try:
-							del sendDict["Camera1"]
-							break
-						except:
-							print(" >> Error deleting Camera1 entry")
-						print(" >> Stopped sending cam image[1]...")        
-				break
+            readDict = json.loads(str(readData,'utf-8'))
+            for d in readDict:
+                    if("Exit" == d):
+                            exitFlag = True
+                    if("SetUdpIpSend" == d):
+                            udpIpSend = readDict["SetUdpIpSend"]
+                            print("New ip: %s" % (udpIpSend))
+                    if("SetDelay" == d):
+                            sendDelay = float(readDict["SetDelay"])
+                            print(" >> New frequency: %.2f" % (1 / sendDelay))
+                    if("SetSpeedSignalReferenceDrive" == d):
+                            axMot.setMovingSpeed(idMotDrive, readDict["SetSpeedSignalReferenceDrive"])
+                            print(" >> New wehicle speed: %.1f" % (readDict["SetSpeedSignalReferenceDrive"]))
+                    if("SetAngleReferenceSteering" == d):
+                            axMot.move(idMotSteering, readDict["SetAngleReferenceSteering"])
+                            print(" >> New steering angle: %.1f" % (readDict["SetAngleReferenceSteering"]))            
+                    if("SendMotorPosition" == d):
+                            if readDict["SendMotorPosition"] == True:
+                                    sendDict["MotorPositionDrive"] = 0
+                                    print(" >> Sending motor position too...")
+                            else:
+                                    try:
+                                            del sendDict["MotorPositionDrive"]
+                                            break
+                                    except:
+                                            print(" >> Error deleting MotorPositionDrive")
+                                    print(" >> Stopped sending motor position...")            
+                    if("SendLapNumber" == d):
+                            if readDict["SendLapNumber"] == True:
+                                    sendDict["LapNumber"] = 0
+                                    print(" >> Sending LapNumber too...")
+                            else:
+                                    try:
+                                            del sendDict["LapNumber"]
+                                            break
+                                    except:
+                                            print(" >> Error deleting LapNumber")
+                                    print(" >> Stopped sending LapNumber...")
+                    if("SendCamera1" == d):
+                            if readDict["SendCamera1"] == True:
+                                    #snap1 = snapShotImage()
+                                    #sendDict["Camera1"] = str(pygame.image.tostring(snap1, "RGBA", True))
+                                    #sendDict["Camera1"] = "ff"
+                                    #print(pygame.image.tostring(snap1, "RGBA", True))
+                                    print(" >> Sending cam image[1] too via TCP...")
+                            else:
+                                    try:
+                                            del sendDict["Camera1"]
+                                            break
+                                    except:
+                                            print(" >> Error deleting Camera1 entry")
+                                    print(" >> Stopped sending cam image[1]...")        
+                    break
         except:
             print(" >> Not valid JSON sting recieved.")
         #print(" >> Read message thread stopped.")
