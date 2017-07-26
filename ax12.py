@@ -663,6 +663,7 @@ class Ax12:
         outData += bytes([checksum])
         Ax12.port.write(outData)
         sleep(Ax12.TX_DELAY_TIME)
+        #print(outData) #debug
         return self.readData(id)
 
     def readSpeed(self, id):
@@ -679,6 +680,7 @@ class Ax12:
         outData += bytes([checksum])
         Ax12.port.write(outData)
         sleep(Ax12.TX_DELAY_TIME)
+        #print(outData) #debug
         return self.readData(id)
 
     def readLoad(self, id):
@@ -695,6 +697,7 @@ class Ax12:
         outData += bytes([checksum])
         Ax12.port.write(outData)
         sleep(Ax12.TX_DELAY_TIME)
+        #print(outData) #debug
         return self.readData(id)
 
     def readMovingStatus(self, id):

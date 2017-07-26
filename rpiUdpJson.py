@@ -33,16 +33,39 @@ height1 = 288
 idMotSteering = 2 # ID of the steering wheel motor
 idMotDrive = 12 # ID of the wheel (drive) motor
 axMot = Ax12()
-
+motSpeedDrive = 0
+motPosDrive = 0
+motPosSteering = 0
+motLoadDrive = 0
+motSetSpeedSigRefDrive = 0
+motSetAngRefSteering = 512
 
 sockR = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 sockR.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # UDP
 sockR.bind(('', udpPortRead)) # UDP
 sockS = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
+def motorControl():
+    global exitFlag, axMot,idMotDrive, idMotSteering, motSpeedDrive, motPosDrive, motPosSteering, motSetSpeedSigRefDrive, motLoadDrive
+    while not exitFlag:
+        time.sleep(0.1)
+        # get motor parameters
+        motLoadDrive  =  axMot.readLoad(idMotDrive)
+        #motSpeedDrive =  axMot.readSpeed(idMotDrive) # todo (checksum error)
+        motPosDrive   =  axMot.readPosition(idMotDrive)
+        motPosSteering = axMot.readPosition(idMotSteering)
+        '''
+        try:
+            print("loadD: %d posD: %d  posS: %d" % (motLoadDrive, motPosDrive, motPosSteering))
+        except:
+            print("Error readnig motLoadDrive or motPosDrive or motPosSteering")
+        '''
+        # set motor paramters
+        axMot.setMovingSpeed(idMotDrive, motSetSpeedSigRefDrive)
+        axMot.move(idMotSteering, motSetAngRefSteering)
 
 def sendMsg():
-    global exitFlag, sendDelay, sendDict, axMot, idMotSteering, idMotDrive
+    global exitFlag, sendDelay, sendDict, idMotSteering, idMotDrive, motSpeedDrive, motPosDrive, motPosSteering, motLoadDrive
     startTime = time.time()
     #print(" >> Write message thread started.")
     while not exitFlag:
@@ -51,15 +74,17 @@ def sendMsg():
         sendDict["Time"] = elapsedTime
         #print(json.dumps(sendDict))
         if "MotorPositionDrive" in sendDict:
-            sendDict["MotorPositionDrive"] = axMot.readPosition(idMotDrive)
+            sendDict["MotorPositionDrive"] = motPosDrive
         if "VehicleSpeedDyna" in sendDict:
-            sendDict["VehicleSpeedDyna"] = axMot.readSpeed(idMotDrive)
-            print(axMot.readSpeed(idMotDrive))
+            sendDict["VehicleSpeedDyna"] = motSpeedDrive
+            #print(motSpeedDrive)
+        if "MotorLoadDrive" in sendDict:
+            sendDict["MotorLoadDrive"] = motLoadDrive
         sockS.sendto((json.dumps(sendDict)).encode('utf-8'), (udpIpSend, udpPortSend))
     #print(" >> Write message thread stopped.")
 
 def readMsg():
-    global exitFlag, udpIpSend, sendDelay, sendDict, axMot, idMotSteering, idMotDrive
+    global exitFlag, udpIpSend, sendDelay, sendDict, motSetSpeedSigRefDrive, motSetAngRefSteering, motLoadDrive
     #print("Read message thread started.")
     while not exitFlag:
         readData, addr = sockR.recvfrom(1024) # buffer size is 1024 bytes
@@ -76,10 +101,10 @@ def readMsg():
                     print(" >> New frequency: %.2f" % (1 / sendDelay))
                 elif("SetSpeedSignalReferenceDrive" == d):
                     #time.sleep(0.2)
-                    axMot.setMovingSpeed(idMotDrive, readDict["SetSpeedSignalReferenceDrive"])
+                    motSetSpeedSigRefDrive = readDict["SetSpeedSignalReferenceDrive"]
                     print(" >> New vehicle speed: %.1f" % (readDict["SetSpeedSignalReferenceDrive"]))
                 elif("SetAngleReferenceSteering" == d):
-                    axMot.move(idMotSteering, readDict["SetAngleReferenceSteering"])
+                    motSetAngRefSteering = readDict["SetAngleReferenceSteering"]
                     print(" >> New steering angle: %.1f" % (readDict["SetAngleReferenceSteering"]))            
                 elif("SendMotorPositionDrive" == d):
                     if readDict["SendMotorPositionDrive"] == True:
@@ -103,6 +128,17 @@ def readMsg():
                         except:
                             print(" >> Error deleting VehicleSpeedDyna")
                         print(" >> Stopped sending motor position...")         
+                elif("SendMotorLoadDrive" == d):
+                    if readDict["SendMotorLoadDrive"] == True:
+                        sendDict["MotorLoadDrive"] = motLoadDrive
+                        print(" >> Sending motor load (MotorLoadDrive) too...")
+                    else:
+                        try:
+                            del sendDict["MotorLoadDrive"]
+                            break
+                        except:
+                            print(" >> Error deleting MotorLoadDrive")
+                        print(" >> Stopped sending motor load...")         
                 elif("SendLapNumber" == d):
                     if readDict["SendLapNumber"] == True:
                         sendDict["LapNumber"] = 0
@@ -116,7 +152,6 @@ def readMsg():
                         print(" >> Stopped sending LapNumber...")
                 elif("SendCamera1" == d):
                     if readDict["SendCamera1"] == True:
-                        snap1 = snapShotImage()
                         print(" >> Sending cam image[1] too via TCP...")
                     else:
                         try:
@@ -132,6 +167,25 @@ def readMsg():
             print(" >> Not valid JSON sting recieved.")
     print(" >> Read message thread stopped.")
 
+
+def tcpMsg():
+    global exitFlag, sendDict, tcpPortSend, tcpIpSend
+    while not exitFlag:
+        if "Camera1" in sendDict:
+            #snap1 = snapShotImage()
+            snap1 = bytes([0x00, 0x00, 0x56, 0x45, 0x74, 0x44, 0x76, 0x46, 0x3F, 0xD0, 0x00, 0x08 ])
+            sockT = socket.socket()#(socket.AF_INET, socket.SOCK_STREAM)
+            
+            sockT.bind(("192.168.0.10", 5008))#((tcpIpSend, tcpPortSend))
+            sockT.listen(1)
+            sockTconn, addr = sockT.accept()
+            print('Connection estabilished! ', addr)
+            while "Camera1" in sendDict:
+                time.sleep(0.1)
+                sockTconn.send(("B" + str(len(snap1)).zfill(16) + "E").encode('ascii')) # 18 bytes to send (and read on the PC side)
+                sockTconn.send(snap1) # TCP
+            conn.close()
+            
 
 def snapShotImage():
     global width1, height1
@@ -150,9 +204,15 @@ axMot.setAngleLimit(idMotDrive, 0, 0)
 axMot.setAngleLimit(idMotSteering, 0, 1023)
 s = threading.Thread(target=sendMsg)
 r = threading.Thread(target=readMsg)
+m = threading.Thread(target=motorControl)
+t = threading.Thread(target=tcpMsg)
 s.start()
 r.start()
+m.start()
+t.start()
 s.join() # block until all tasks are done
-r.join() # block until all tasks are done      
+r.join() # block until all tasks are done
+m.join() # block until all tasks are done
+t.join() # block until all tasks are done  
 axMot.setMovingSpeed(idMotDrive, 0) # stop the motor
 print("Exit message recieved")
