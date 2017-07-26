@@ -87,7 +87,7 @@ def readMsg():
     global exitFlag, udpIpSend, sendDelay, sendDict, motSetSpeedSigRefDrive, motSetAngRefSteering, motLoadDrive
     #print("Read message thread started.")
     while not exitFlag:
-        readData, addr = sockR.recvfrom(1024) # buffer size is 1024 bytes
+        readData, addr = sockR.recvfrom(1024) # buffer size
         try:
             readDict = json.loads(str(readData,'utf-8'))
             for d in readDict:
@@ -162,7 +162,6 @@ def readMsg():
                         print(" >> Stopped sending cam image[1]...")
                 else:
                     print("R: %s not recognized" % str(readData,'utf-8'))
-                break
         except:
             print(" >> Not valid JSON sting recieved.")
     print(" >> Read message thread stopped.")
