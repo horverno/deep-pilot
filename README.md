@@ -19,3 +19,7 @@ The most important [wiki](https://github.com/horverno/deep-pilot/wiki) pages are
 ## Original vs the model vehicle image
 
 ![Original race car vs the Lego model car](http://www.sze.hu/~herno/robotics/DeepDriveModelVsOriginal.png)
+
+## Video
+
+* [Model vehicle demo](https://www.youtube.com/watch?v=JqxE0cm3k-s)
