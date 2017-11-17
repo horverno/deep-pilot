@@ -1,0 +1,18 @@
+﻿<Window x:Class="DeepPilotCsharp.SshWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeepPilotCsharp"
+        mc:Ignorable="d"
+        Title="SSH Client" Height="300" Width="300" Closing="Window_Closing" Loaded="Window_Loaded">
+    <Grid>
+        <Button Name="btRun" Content="Run" HorizontalAlignment="Left" Margin="260,27,0,0" VerticalAlignment="Top" Width="27" Click="btRun_Click"/>
+        <TextBox Name="tbCommand" HorizontalAlignment="Left" Height="23" Margin="10,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="245" KeyDown="tbCommand_KeyDown"/>
+        <TextBox Name="tbOutput"  HorizontalAlignment="Left" Height="179" Margin="10,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" VerticalScrollBarVisibility="Auto"/>
+        <Label Name="lbCommand" Content="Command:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Name="lbOutput" Content="Output:" HorizontalAlignment="Left" Margin="0,49,0,0" VerticalAlignment="Top"/>
+        <Button Name="btReConn" Content="ReC" HorizontalAlignment="Left" Margin="260,52,0,0" VerticalAlignment="Top" Width="26" Click="btReConn_Click"/>
+        <Label Name="lbLoad" Content="Connecting ..." HorizontalAlignment="Left" Margin="68,20,0,0" VerticalAlignment="Top" FontSize="22"/>
+    </Grid>
+</Window>

@@ -12,7 +12,7 @@ namespace DeepPilotCsharp
     /// <summary>
     /// An UDP message sender class.
     /// </summary>
-    class UDPSender
+    public class UDPSender
     {
 
         /// <summary>
@@ -60,6 +60,11 @@ namespace DeepPilotCsharp
             {
                 return false;
             }
+        }
+
+        public void Close()
+        {
+            sendingSocket.Close();
         }
     }
 }

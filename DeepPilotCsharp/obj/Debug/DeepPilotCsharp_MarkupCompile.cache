@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\JKK\deep-pilot\deep-pilot-pc-csharp\deep-pilot-pc-csharp\DeepPilotCsharp\obj\Debug\
+C:\Users\test\source\repos\deep-pilot\DeepPilotCsharp\obj\Debug\
 DeepPilotCsharp
 none
 false
 DEBUG;TRACE
-D:\JKK\deep-pilot\deep-pilot-pc-csharp\deep-pilot-pc-csharp\DeepPilotCsharp\App.xaml
-11151548125
+C:\Users\test\source\repos\deep-pilot\DeepPilotCsharp\App.xaml
+31506629068
 
-91396283582
-15-121728251
-MainWindow.xaml;
+13930899529
+73476787223
+Cam\CamViewControl.xaml;MainWindow.xaml;SshWindow.xaml;
 
 False
 

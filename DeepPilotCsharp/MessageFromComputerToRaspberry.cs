@@ -12,7 +12,7 @@ namespace DeepPilotCsharp
     /// <summary>
     /// Represent a message that the PC send to the Raspberry.
     /// </summary>
-    class MessageFromComputerToRaspberry
+    public class MessageFromComputerToRaspberry
     {
 
         /// <summary>
