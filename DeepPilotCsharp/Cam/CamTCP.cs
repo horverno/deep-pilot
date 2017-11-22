@@ -81,7 +81,7 @@ namespace DeepPilotCsharp.Cam
                                 MemoryStream ms = new MemoryStream();
                                 while (tolt != ossz)
                                 {
-                                    akt = _stream.Read(PictureData, 0, ossz);
+                                    akt = _stream.Read(PictureData, 0, ossz-tolt);
                                     tolt += akt;
                                     ms.Write(PictureData, 0, akt);
                                     if (_ct.IsCancellationRequested)
